@@ -189,7 +189,6 @@ class FSFClient:
             fname = hashlib.md5(data).hexdigest()
             with open('%s/%s' % (dirname, fname), 'w') as f:
                 f.write(data)
-                f.close  #todo, this is redundant
 
             if sub_count == 0:
                 self.full = False
