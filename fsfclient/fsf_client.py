@@ -42,9 +42,18 @@ class FSFClientConfig:
         self.confpath = self.get_confpath()
 
     def get_confpath(self):
+        """
+        Gets the absolute path to the fsfclient.json config file
+        :return: a file path
+        """
         return os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fsfclient.json')
 
     def replaceconfig(self, newconfigfile):
+        """
+        hand me a new config file and I validate the results and update the current config
+        :param newconfigfile: open file object
+        :return: the newconfigs
+        """
         c = self.current
         error = False
         newconfigdict = json.load(newconfigfile)
