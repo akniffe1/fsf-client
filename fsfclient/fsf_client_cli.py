@@ -10,8 +10,10 @@
 import os
 import sys
 import argparse
+import json
 
 from fsf_client import FSFClient
+from fsf_client import FSFClientConfig
 
 
 def main():
@@ -40,13 +42,19 @@ def main():
     parser.add_argument('--full', default=False, action='store_true', help="""Dump all sub objects of submitted file to
     current directory of the client. Format or directory name is \'fsf_dump_[epoch time]_[md5 hash of scan results]\'.
     Only supported when suppress-report option is false (default).""")
-
+    # parser.add_argument("--port", type=int, help="Update your client configuration with new FSF servers")
+    # parser.add_argument("--servers", type=list, help="Update your client configuration with new FSF servers")
+    # parser.add_argument("--clientlog", type=str, help="""Update your client configuration with a new client log path
+    # Must be an explicit path""")
+    parser.add_argument("--conf", action="store_true", help="Replace your entire client configuration with the file supplied")
+    parser.add_argument("--dumpconfig", action="store_true", help="prints out your current client config to the supplied file")
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
 
     try:
         args = parser.parse_args()
+
     except IOError:
         e = sys.exc_info()
         print 'The file provided could not be found. Error: %s' % e
@@ -54,6 +62,31 @@ def main():
 
     if len(args.file) == 0:
         print 'A file to scan needs to be provided!'
+
+    if args.conf:
+        c = FSFClientConfig()
+        resp = c.replaceconfig(args.file[0])
+        print resp
+        sys.exit(1)
+
+    if args.dumpconfig:
+        c = FSFClientConfig()
+        try:
+            # take the first object in the file list, get its path using file.name, close it, and then open
+            # for writing and json.dumps the current config. Its kinda hackish--but it preserves the basic client
+            # behavior of opening all files that get submitted to FSFServer in read only mode
+            outpath = args.file[0].name
+            args.file[0].close()
+            with open(outpath, 'w') as f:
+                f.write(json.dumps(c.current))
+
+        # be prepared to handle whatever exceptions you might get from allowing user file r/w decisions
+        except Exception, err:
+            print err
+            sys.exit(1)
+
+        # exit, since we don't want to submit our config file to FSFServer
+        sys.exit(1)
 
     for f in args.file:
         filename = os.path.basename(f.name)

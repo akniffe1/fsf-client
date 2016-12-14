@@ -30,8 +30,39 @@ import struct
 import sys
 import time
 from datetime import datetime as dt
+from pkg_resources import resource_string
+import json
 
-import config
+# import config
+
+class FSFClientConfig:
+
+    def __init__(self):
+        self.current = json.loads(resource_string(__name__, 'fsfclient.json'))
+        self.confpath = self.get_confpath()
+
+    def get_confpath(self):
+        return os.path.join(os.path.abspath(os.path.dirname(__file__)), 'fsfclient.json')
+
+    def replaceconfig(self, newconfigfile):
+        c = self.current
+        error = False
+        newconfigdict = json.load(newconfigfile)
+        if isinstance(newconfigdict, dict):
+            for key in c:
+                if key not in newconfigdict:
+                    error = True
+                else:
+                    for key2 in c[key]:
+                        if key2 not in newconfigdict[key]:
+                            error = True
+            if error is True:
+                error = "invalid config issued. Config must be in the following format: %s" % c
+                return error
+            else:
+                with open(self.confpath, 'w') as f:
+                    f.write(json.dumps(newconfigdict))
+        return newconfigdict
 
 
 class FSFClient:
@@ -59,7 +90,7 @@ class FSFClient:
         :param full: Return the scan report AND all sub-objects of the submitted file object.
         :param sampleobject: a buffer containing the file that you're submitting.
         """
-        
+        conf = self.loadconfig(resource_string(__name__, 'fsfclient.json'))
         self.fullpath = fullpath
         self.samplename = samplename
         self.delete = delete
@@ -70,16 +101,24 @@ class FSFClient:
         self.sampleobject = sampleobject
         # will hold host after verifying connection to server
         self.host = ''  # todo set this to a default value
-        self.port = config.SERVER_CONFIG['PORT']
-        self.logfile = config.CLIENT_CONFIG['LOG_FILE']
-        self.server_list = config.SERVER_CONFIG['IP_ADDRESS']
+        self.port = conf['server']['port']
+        self.logfile = conf['client']['log_file']
+        self.server_list = conf['server']['ip_address']
 
         archive_options = ['none', 'file-on-alert', 'all-on-alert', 'all-the-files', 'all-the-things']
-        if args.archive not in archive_options:
+        if self.archive not in archive_options:
             error = '''%s Please specify a valid archive option: \'none\', \'file-on-alert\', \'all-on-alert\',
              \'all-the-files\' or \'all-the-things\'.\n''' % dt.now()
             self.issue_error(error)
             sys.exit(1)
+
+    def loadconfig(self, fp):
+        """
+        Loads the json config file
+        :param fp: the json config fileobject
+        :return: dict of configs
+        """
+        return json.loads(fp)
 
     def initiate_submission(self):
         """

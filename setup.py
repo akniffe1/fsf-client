@@ -9,7 +9,8 @@ setup(
     author='Adam Kniffen',
     author_email='akniffen@cisco.com',
     description='The FSF v1.0 Client',
-    data_files=[('/etc/fsf-client/', 'fsf-client.json')],
+    package_data={'': ['fsfclient.json']},
+    include_package_data=True,
     entry_points={
         'console_scripts': [
             'fsfclient=fsfclient.fsf_client_cli:main'
