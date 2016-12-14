@@ -18,7 +18,7 @@ from fsf_client import FSFClientConfig
 
 def main():
 
-    parser = argparse.ArgumentParser(prog='fsf_client',
+    parser = argparse.ArgumentParser(prog='fsfclient',
                                      description="""Uploads files to scanner server and returns the results to the user
     if desired. Results will always be written to a server side log file. Default options for each flag are designed to
     accommodate easy analyst interaction. Adjustments can be made to accommodate larger operations.
