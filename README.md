@@ -1,4 +1,4 @@
-#fsf-client
+# fsf-client
 
 A packaged python client to https://github.com/emersonelectricco/fsf
 
@@ -75,7 +75,7 @@ fsfclient --dumpconfig /path/to/file/where/you/want/to/copy/your/config/fsfclien
 fsfclient --conf /path/to/file/where/you/want/to/copy/your/config/fsfclient.json
 ````
 
-Alternatively, you can clone this repo, update fsf-client/fsfclient/fsfclient.json with your desired config values, and then
+Alternatively, you can fork this repo, update fsf-client/fsfclient/fsfclient.json with your desired config values, and then
 ````
 pip install git+https://github.com/mygitaccount/fsf-client.git
 ````
