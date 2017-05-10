@@ -87,3 +87,23 @@ To simply submit a file and get the scan report back, run the following:
 ````
 fsfclient /path/to/my/file 
 ````
+
+### Returning JSON Calling the FSFClient class with Python
+The following example will return a JSON dict for use by a python script
+` 
+  # Read in file
+  f = open(self.fullpath, 'r')
+  # Initialze FSF Client
+  fsf = fsf_client.FSFClient(samplename=str(filename),
+                             fullpath=str(fullpath),
+                             delete=False,
+                             source='Analyst',
+                             archive='none',
+                             suppress_report=False,
+                             full=False,
+                             sampleobject=f.read())
+
+  # Submit file f to fsfclient, and return a json object as a string
+  out = fsf.initiate_submission(return_json=True)
+  # Load our json object into a python dict for futher parsing
+  parsed_json = json.loads(out)`
