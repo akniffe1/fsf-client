@@ -111,4 +111,5 @@ The following example will return a JSON dict for use by a python script
   `out = fsf.initiate_submission(return_json=True)`
   
   Load our json object into a python dict for futher parsing  
+  
   `parsed_json = json.loads(out)`
