@@ -91,7 +91,8 @@ fsfclient /path/to/my/file
 ##### Returning JSON When Calling the FSFClient class with Python
 
 The following example will return a JSON dict for use by a python script
-  ```# Read in file  
+  Read in file
+  ```  
   f = open(self.fullpath, 'r')
   ```
   Initialze FSF Client
@@ -109,5 +110,5 @@ The following example will return a JSON dict for use by a python script
   
   `out = fsf.initiate_submission(return_json=True)`
   
-  Load our json object into a python dict for futher parsing
+  Load our json object into a python dict for futher parsing  
   `parsed_json = json.loads(out)`
