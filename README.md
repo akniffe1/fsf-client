@@ -96,7 +96,8 @@ The following example will return a JSON dict for use by a python script
   f = open(self.fullpath, 'r')
   ```
   Initialze FSF Client
-  ```fsf = fsf_client.FSFClient(samplename=str(filename),
+  ```
+  fsf = fsf_client.FSFClient(samplename=str(filename),
                              fullpath=str(fullpath),
                              delete=False,
                              source='Analyst',
