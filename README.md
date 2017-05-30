@@ -80,10 +80,37 @@ Alternatively, you can fork this repo, update fsf-client/fsfclient/fsfclient.jso
 pip install git+https://github.com/mygitaccount/fsf-client.git
 ````
 
-### Submitting Files for Scanning by FSF
+#### Submitting Files for Scanning by FSF
 There are a number of useful options in fsfclient for tailoring your submission to the different kinds
 of response, storage, and alerting that FSF-Server can provide, and all of these are optional flags on the file submission. 
 To simply submit a file and get the scan report back, run the following:
 ````
 fsfclient /path/to/my/file 
 ````
+
+##### Returning JSON When Calling the FSFClient class with Python
+
+The following example will return a JSON dict for use by a python script
+  Read in file
+  ```  
+  f = open(self.fullpath, 'r')
+  ```
+  Initialze FSF Client
+  ```
+  fsf = fsf_client.FSFClient(samplename=str(filename),
+                             fullpath=str(fullpath),
+                             delete=False,
+                             source='Analyst',
+                             archive='none',
+                             suppress_report=False,
+                             full=False,
+                             sampleobject=f.read())
+  ```
+  
+  Submit file f to fsfclient, and return a json object as a string
+  
+  `out = fsf.initiate_submission(return_json=True)`
+  
+  Load our json object into a python dict for futher parsing  
+  
+  `parsed_json = json.loads(out)`

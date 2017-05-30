@@ -129,9 +129,10 @@ class FSFClient:
         """
         return json.loads(fp)
 
-    def initiate_submission(self):
+    def initiate_submission(self, return_json=False):
         """
         Test connect to a FSF server in your FSF server pool (if configured)
+        param: return_json - if true, this methon will return JSON string of results
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         random.shuffle(self.server_list)
@@ -149,7 +150,9 @@ class FSFClient:
                 attempts += 1
             if success:
                 self.host = server
-                self.process_files()
+                raw_json = self.process_files()
+                if return_json:
+                    return raw_json
                 break
             elif attempts == len(self.server_list):
                 e = sys.exc_info()
@@ -179,7 +182,10 @@ class FSFClient:
             if self.delete:
                 os.remove(self.fullpath)
             if not self.suppress_report:
-                self.process_results(sock)
+                output = self.process_results(sock)
+                if output:
+                    sock.close()
+                    return output
             sock.close()
 
     def process_results(self, sock):
@@ -209,6 +215,9 @@ class FSFClient:
             error = '%s There was a problem getting data for %s from %s on port %s. Error: %s' % \
                     (dt.now(), self.samplename, self.host, self.port, e)
             self.issue_error(error)
+
+        if data:
+            return data
 
     def dump_subobjects(self, sock, dirname):
         """
