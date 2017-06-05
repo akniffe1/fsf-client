@@ -77,7 +77,7 @@ class FSFClientConfig:
 class FSFClient:
     """FSFClient is the class that you call when you want to send a file to FSF"""
 
-    def __init__(self, fullpath, samplename, delete, source, archive, suppress_report, full, sampleobject):
+    def __init__(self, fullpath, samplename, delete, source, archive, suppress_report, full, sampleobject, config_kv=None):
         """
         :param fullpath: type(str) path to the file object being submitted. Used for submission metadata.
         This gets added to the scan report
@@ -99,7 +99,27 @@ class FSFClient:
         :param full: Return the scan report AND all sub-objects of the submitted file object.
         :param sampleobject: a buffer containing the file that you're submitting.
         """
-        conf = self.loadconfig(resource_string(__name__, 'fsfclient.json'))
+        # look for config_kv - where we pass fsf port, ip address/server, and logfile path into Class
+        if config_kv:
+            # will hold host after verifying connection to server
+            self.server_list = []
+            self.host = ''  # todo set this to a default value
+            self.port = config_kv['fsf_port']
+            self.logfile = config_kv['fsf_logfile']
+            self.server_list = [config_kv['fsf_ip_address']]
+
+        # if config_kv not present, then load config from fsfclient.json
+        elif os.path.isfile('fsfclient.json'):
+            conf = self.loadconfig(resource_string(__name__, 'fsfclient.json'))
+            # will hold host after verifying connection to server
+            self.host = ''  # todo set this to a default value
+            self.port = conf['server']['port']
+            self.logfile = conf['client']['log_file']
+            self.server_list = conf['server']['ip_address']
+
+        else:
+            print('No configs passed in. Check for fsfclient.json or pass in config_kv dict')
+
         self.fullpath = fullpath
         self.samplename = samplename
         self.delete = delete
@@ -108,11 +128,7 @@ class FSFClient:
         self.suppress_report = suppress_report
         self.full = full
         self.sampleobject = sampleobject
-        # will hold host after verifying connection to server
-        self.host = ''  # todo set this to a default value
-        self.port = conf['server']['port']
-        self.logfile = conf['client']['log_file']
-        self.server_list = conf['server']['ip_address']
+
 
         archive_options = ['none', 'file-on-alert', 'all-on-alert', 'all-the-files', 'all-the-things']
         if self.archive not in archive_options:
