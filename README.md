@@ -131,4 +131,5 @@ The following example will return a JSON dict for use by a python script
                            sampleobject=f.read()
                            config_kv={'fsf_ip_address': '127.0.0.1',
                                 'fsf_port': '5800',
-                                'fsf_logfile': '/tmp/client_dbg.log'})```
+                                'fsf_logfile': '/tmp/client_dbg.log'})
+   ```
