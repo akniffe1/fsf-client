@@ -98,6 +98,8 @@ class FSFClient:
         scan report.
         :param full: Return the scan report AND all sub-objects of the submitted file object.
         :param sampleobject: a buffer containing the file that you're submitting.
+        :param config_kv type(dict): A dict containing fsf_ip_address (str), fsf_port(int) and fsf_logfile(str).
+            Overrides fsfclients.json
         """
         # look for config_kv - where we pass fsf port, ip address/server, and logfile path into Class
         if config_kv:
