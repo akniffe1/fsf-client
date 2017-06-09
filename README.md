@@ -114,3 +114,22 @@ The following example will return a JSON dict for use by a python script
   Load our json object into a python dict for futher parsing  
   
   `parsed_json = json.loads(out)`
+  
+  ##### Override fsfclient.json
+  
+  Optionally, you can pass `config_kv` while initializing FSFClient, which will override the
+  fsfclient.json file and read config from the config_kv(dict). This is useful if you are calling fsfclient
+  from another program. 
+  
+  ```fsf = fsf_client.FSFClient(samplename=str(filename),
+                           fullpath=str(fullpath),
+                           delete=False,
+                           source='Analyst',
+                           archive='none',
+                           suppress_report=False,
+                           full=False,
+                           sampleobject=f.read()
+                           config_kv={'fsf_ip_address': '127.0.0.1',
+                                'fsf_port': '5800',
+                                'fsf_logfile': '/tmp/client_dbg.log'})
+   ```
